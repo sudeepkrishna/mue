@@ -6,6 +6,7 @@ const $messageFormInput = $messageForm.querySelector('input')
 const $messageFormButton = $messageForm.querySelector('button')
 const $locationButton = document.querySelector('#share-location')
 const $messages = document.querySelector('#messages')
+const $leaveRoomButton = document.querySelector('#leave-room')
 
 //Templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
@@ -43,10 +44,11 @@ const autoscroll = () => {
 }
 
 let ownusername = ''
-
+let roomname = ''
 //populating page header
 socket.on('startup', ({room, name}) => {
     ownusername = name
+    roomname = room
     document.getElementById("user-name").innerHTML = name
     const html = Mustache.render(headerTemplate, {
         room: room
@@ -145,6 +147,17 @@ $locationButton.addEventListener('click', () => {
         })
     })
 
+})
+
+$leaveRoomButton.addEventListener('click', () => {
+    const function1 = function () {
+        location.href = "/"
+    }
+    socket.emit('leave-room', roomname, function1)
+})
+
+document.querySelector('#room-back').addEventListener('click', () => {
+    location.href = "/"
 })
 
 //Send an event to server when a user joins

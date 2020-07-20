@@ -74,17 +74,30 @@ io.on('connection', (socket) => {
     })
 
     socket.on('disconnect', async () => {
-        //remove user
-        //const user = await removeUser(socket.id)
-        const user = await getUser(socket.id) 
-        if(user){
-            //update users in sidebar
-            const users = await getUsersInRoom(user.room)
-            io.to(user.room).emit('chat-app', `${user.name} has left!`)
-            io.to(user.room).emit('usersInRoom', {
-                users: users,
-            })
-        }    
+        try{
+            const user = await getUser(socket.id)
+            if(user){
+                io.to(user.room).emit('chat-app', `${user.name} has disconnected!`)
+            }  
+        }
+        catch(e){
+            console.log(e)
+        }
+    })
+
+    socket.on('leave-room', async(roomname, callback) => {
+        socket.leave(roomname, async () => {
+            const user = await removeUser(socket.id)
+            if (user) {
+                //update users in sidebar
+                const users = await getUsersInRoom(user.room)
+                io.to(user.room).emit('chat-app', `${user.name} has left!`)
+                io.to(user.room).emit('usersInRoom', {
+                    users: users,
+                })
+            }
+            callback()
+        })
     })
 
     socket.on('sendLocation', async (coords, callback) => {
