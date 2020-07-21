@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 //CONNECT TO A DB
-mongoose.connect("mongodb://127.0.0.1:27017/chat-app", {
+mongoose.connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
